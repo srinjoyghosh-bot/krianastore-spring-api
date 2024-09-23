@@ -6,6 +6,7 @@ import com.joy.krianastore.domain.dto.ApiResponse;
 import com.joy.krianastore.domain.dto.ReportDto;
 import com.joy.krianastore.domain.services.ReportsService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/reports")
 @AllArgsConstructor
+@Slf4j
 public class ReportController {
     private final ReportsService reportsService;
     private final RateLimitingService rateLimitingService;
@@ -25,6 +27,7 @@ public class ReportController {
     @GetMapping
     public ResponseEntity<ApiResponse<ReportDto>> getReports(@RequestParam(required = false) String period, Principal connectedUser) {
         if (rateLimitingService.allowRequest("/api/reports")) {
+            log.error("Rate limit exceeded for /api/reports");
             throw new RateLimitExceededException("You have exceeded the allowed number of requests. Please try again later.");
         }
         ReportDto response;
@@ -35,6 +38,7 @@ public class ReportController {
         } else if (period.equals("yearly")) {
             response = reportsService.generateYearlyReport(connectedUser);
         } else {
+            log.error("Unsupported period: {}", period);
             throw new IllegalArgumentException("Invalid period: " + period);
         }
         return new ResponseEntity<>(new ApiResponse<>(true, "Reports fetched!", response), HttpStatus.OK);

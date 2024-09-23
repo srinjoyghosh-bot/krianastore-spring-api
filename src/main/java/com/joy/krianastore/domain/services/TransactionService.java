@@ -9,6 +9,7 @@ import com.joy.krianastore.data.models.User;
 import com.joy.krianastore.domain.dto.TransactionDto;
 import com.joy.krianastore.domain.utils.TransactionMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,19 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final StoreRepository storeRepository;
     private final CurrencyConversionClient currencyConversionClient;
 
     public TransactionDto recordTransaction(TransactionDto transactionDTO, Principal connectedUser) {
+        log.info("Recording transaction {}", transactionDTO);
         Transaction transaction;
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
         if(optionalStore.isEmpty()){
+            log.error("Store {} not found", user.getStore().getId());
             throw new ResourceNotFoundException("Store not found with id: " + user.getStore().getId());
         }
         var store=optionalStore.get();
@@ -43,11 +47,14 @@ public class TransactionService {
         transaction = transactionRepository.save(transaction);
         store.addTransaction(transaction);
         storeRepository.save(store);
+        log.info("Transaction {} saved", transaction);
         return TransactionMapper.toDTO(transaction);
     }
 
     public List<TransactionDto> getTransactionsBetweenDates(Principal connectedUser, LocalDate startDate, LocalDate endDate) {
+        log.info("Getting transactions between {} and {}", startDate, endDate);
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        log.info("Returning transactions between {} and {}", startDate, endDate);
         return transactionRepository.findAllByStoreIdAndTransactionDateBetween(user.getStore().getId(),startDate, endDate).stream().map(TransactionMapper::toDTO).toList();
     }
 }

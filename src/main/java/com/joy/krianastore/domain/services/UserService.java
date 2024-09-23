@@ -11,6 +11,7 @@ import com.joy.krianastore.domain.dto.UserLoginDto;
 import com.joy.krianastore.domain.dto.UserLoginResponseDto;
 import com.joy.krianastore.domain.dto.UserSignupDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import java.security.Principal;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
@@ -30,47 +32,58 @@ public class UserService {
     private final JwtService jwtService;
 
     public void userSignUp(UserSignupDto userSignupDto) {
+        log.info("Registering user {}", userSignupDto);
         Store store = new Store();
         store.setName(userSignupDto.storeName());
-        var savedStore=storeRepository.save(store);
+        var savedStore = storeRepository.save(store);
         User user = new User();
         user.setEmail(userSignupDto.email());
         user.setPassword(passwordEncoder.encode(userSignupDto.password()));
         user.setStore(savedStore);
         user.setRole(Role.ADMIN);
-        var savedUser=userRepository.save(user);
+        log.info("Saving user {}", user);
+        var savedUser = userRepository.save(user);
         savedStore.addUser(savedUser);
+        log.info("Saving store {}", savedStore);
         storeRepository.save(savedStore);
     }
 
     public void createUser(UserCreateDto dto, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        var optionalStore=storeRepository.findById(user.getStore().getId());
-        if(optionalStore.isEmpty()) {
+        var optionalStore = storeRepository.findById(user.getStore().getId());
+        if (optionalStore.isEmpty()) {
+            log.error("Store {} not found", user.getStore().getId());
             throw new ResourceNotFoundException("Store not found with id: " + user.getStore().getId());
         }
-        var store=optionalStore.get();
-        User newUser=new User();
+        var store = optionalStore.get();
+        User newUser = new User();
         newUser.setEmail(dto.email());
         newUser.setPassword(passwordEncoder.encode(dto.password()));
         newUser.setRole(dto.role());
         newUser.setStore(store);
+        log.info("Saving new user {}", newUser);
         userRepository.save(newUser);
         store.addUser(newUser);
+        log.info("Updating store {}", store);
         storeRepository.save(store);
     }
 
     public UserLoginResponseDto loginUser(UserLoginDto dto) {
-        var optionalUser=userRepository.findByEmail(dto.email());
-        if(optionalUser.isEmpty()) {
+        var optionalUser = userRepository.findByEmail(dto.email());
+        if (optionalUser.isEmpty()) {
+            log.error("User {} not found", dto.email());
             throw new ResourceNotFoundException("User not found with email: " + dto.email());
         }
-        var user=optionalUser.get();
-        if(!passwordEncoder.matches(dto.password(), user.getPassword())) {
+        var user = optionalUser.get();
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+            log.error("Wrong password");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
         }
+        //TODO
         //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
-        var token=jwtService.generateToken(user);
+        log.info("Generating token for user {}", user);
+        var token = jwtService.generateToken(user);
+        log.info("Logged in user {}", user);
         return new UserLoginResponseDto(token);
 
     }

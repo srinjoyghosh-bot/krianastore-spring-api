@@ -5,6 +5,7 @@ import com.joy.krianastore.data.dao.TransactionRepository;
 import com.joy.krianastore.data.models.User;
 import com.joy.krianastore.domain.dto.ReportDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,19 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ReportsService {
     private final TransactionRepository transactionRepository;
 
     public ReportDto generateWeeklyReport(Principal connectedUser) {
+        log.info("Generating weekly report...");
         LocalDate endDate = LocalDate.now().plusDays(1);
         LocalDate startDate = endDate.minusDays(7);
         return generateReport(startDate, endDate, connectedUser);
     }
 
     public ReportDto generateMonthlyReport(Principal connectedUser) {
+        log.info("Generating monthly report...");
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.withDayOfMonth(1);
         LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
@@ -34,6 +38,7 @@ public class ReportsService {
     }
 
     public ReportDto generateYearlyReport(Principal connectedUser) {
+        log.info("Generating yearly report...");
         LocalDate now = LocalDate.now();
         LocalDate startDate = now.withDayOfYear(1);
         LocalDate endDate = now.withDayOfYear(now.lengthOfYear());
@@ -42,24 +47,25 @@ public class ReportsService {
 
     private ReportDto generateReport(LocalDate startDate, LocalDate endDate, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        log.info("Fetching transactions between {} and {}", startDate, endDate);
         List<Transaction> transactions = transactionRepository.findAllByStoreIdAndTransactionDateBetween(user.getStore().getId(), startDate, endDate);
-
+        log.info("Calculation total credits");
         BigDecimal totalCredits = transactions.stream()
                 .filter(Transaction::isCredit)
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        log.info("Calculation total debits");
         BigDecimal totalDebits = transactions.stream()
                 .filter(transaction -> !transaction.isCredit())
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        log.info("Calculation netFlow");
         BigDecimal netFlow = totalCredits.subtract(totalDebits);
-
+        log.info("Calculation daily breakdown");
         Map<String, BigDecimal> dailyBreakdown = transactions.stream()
                 .collect(Collectors.groupingBy(tr -> tr.getTransactionDate().toString(),
                         Collectors.reducing(BigDecimal.ZERO, txn -> txn.isCredit() ? txn.getAmount() : txn.getAmount().negate(), BigDecimal::add)));
-
+        log.info("Generated report for {}", user);
         return new ReportDto(totalCredits, totalDebits, netFlow, dailyBreakdown);
     }
 }

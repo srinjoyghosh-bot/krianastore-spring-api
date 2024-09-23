@@ -6,6 +6,7 @@ import com.joy.krianastore.domain.services.TransactionService;
 import com.joy.krianastore.domain.dto.ApiResponse;
 import com.joy.krianastore.domain.dto.TransactionDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/transaction")
 @AllArgsConstructor
+@Slf4j
 public class TransactionController {
     private final TransactionService transactionService;
     private final RateLimitingService rateLimitingService;
@@ -24,6 +26,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<ApiResponse<TransactionDto>> recordTransaction(@RequestBody TransactionDto transactionDTO, Principal currentUser) {
         if (rateLimitingService.allowRequest("/api/transactions")) {
+            log.error("Rate limit exceeded for /api/transactions");
             throw new RateLimitExceededException("You have exceeded the allowed number of requests. Please try again later.");
         }
         var response = transactionService.recordTransaction(transactionDTO, currentUser);
