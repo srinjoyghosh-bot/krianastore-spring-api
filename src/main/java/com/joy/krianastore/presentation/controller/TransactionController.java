@@ -1,5 +1,6 @@
 package com.joy.krianastore.presentation.controller;
 
+import com.joy.krianastore.domain.services.RateLimitingService;
 import com.joy.krianastore.domain.services.TransactionService;
 import com.joy.krianastore.presentation.dto.ApiResponse;
 import com.joy.krianastore.presentation.dto.TransactionDto;
@@ -18,18 +19,22 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;
+    private final RateLimitingService rateLimitingService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<TransactionDto>> recordTransaction(@RequestBody TransactionDto transactionDTO, Principal currentUser) {
-        var response= transactionService.recordTransaction(transactionDTO,currentUser);
-        return new ResponseEntity<>(new ApiResponse<>(true,"Transaction added!",response), HttpStatus.CREATED);
+        if (rateLimitingService.allowRequest("/api/transactions")) {
+            return new ResponseEntity<>(new ApiResponse<>(false, "Rate limit exceeded", null), HttpStatus.TOO_MANY_REQUESTS);
+        }
+        var response = transactionService.recordTransaction(transactionDTO, currentUser);
+        return new ResponseEntity<>(new ApiResponse<>(true, "Transaction added!", response), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TransactionDto>>> getTransactions(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, Principal connectedUser) {
-        var response= transactionService.getTransactionsBetweenDates(connectedUser,startDate,endDate).stream()
+        var response = transactionService.getTransactionsBetweenDates(connectedUser, startDate, endDate).stream()
                 .map(TransactionMapper::toDTO)
                 .toList();
-        return new ResponseEntity<>(new ApiResponse<>(true,"Transactions found!",response), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>(true, "Transactions found!", response), HttpStatus.OK);
     }
 }

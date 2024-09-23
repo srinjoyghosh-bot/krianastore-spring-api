@@ -1,5 +1,6 @@
 package com.joy.krianastore.presentation.controller;
 
+import com.joy.krianastore.domain.services.RateLimitingService;
 import com.joy.krianastore.presentation.dto.ApiResponse;
 import com.joy.krianastore.presentation.dto.ReportDto;
 import com.joy.krianastore.domain.services.ReportsService;
@@ -18,19 +19,24 @@ import java.security.Principal;
 @AllArgsConstructor
 public class ReportController {
     private final ReportsService reportsService;
+    private final RateLimitingService rateLimitingService;
+
     @GetMapping
     public ResponseEntity<ApiResponse<ReportDto>> getReports(@RequestParam(required = false) String period, Principal connectedUser) {
+        if (rateLimitingService.allowRequest("/api/reports")) {
+            return new ResponseEntity<>(new ApiResponse<>(false, "Rate limit exceeded", null), HttpStatus.TOO_MANY_REQUESTS);
+        }
         ReportDto response;
-        if(period==null || period.equals("weekly")){
-            response=reportsService.generateWeeklyReport(connectedUser);
+        if (period == null || period.equals("weekly")) {
+            response = reportsService.generateWeeklyReport(connectedUser);
         } else if (period.equals("monthly")) {
-            response=reportsService.generateMonthlyReport(connectedUser);
-        }else if (period.equals("yearly")) {
-            response=reportsService.generateYearlyReport(connectedUser);
-        }else {
+            response = reportsService.generateMonthlyReport(connectedUser);
+        } else if (period.equals("yearly")) {
+            response = reportsService.generateYearlyReport(connectedUser);
+        } else {
             //TODO throw exception
             return null;
         }
-        return new ResponseEntity<>(new ApiResponse<>(true,"Reports fetched!",response), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>(true, "Reports fetched!", response), HttpStatus.OK);
     }
 }
