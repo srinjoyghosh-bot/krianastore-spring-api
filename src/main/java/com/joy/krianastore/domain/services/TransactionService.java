@@ -1,6 +1,7 @@
 package com.joy.krianastore.domain.services;
 
 import com.joy.krianastore.core.CurrencyConversionClient;
+import com.joy.krianastore.core.ResourceNotFoundException;
 import com.joy.krianastore.data.StoreRepository;
 import com.joy.krianastore.data.TransactionRepository;
 import com.joy.krianastore.domain.models.Transaction;
@@ -28,8 +29,7 @@ public class TransactionService {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
         if(optionalStore.isEmpty()){
-            //TODO throw exception
-            return null;
+            throw new ResourceNotFoundException("Store not found");
         }
         var store=optionalStore.get();
         if (!"INR".equals(transactionDTO.currency())) {

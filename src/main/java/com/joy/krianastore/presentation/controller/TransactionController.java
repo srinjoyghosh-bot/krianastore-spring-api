@@ -1,5 +1,6 @@
 package com.joy.krianastore.presentation.controller;
 
+import com.joy.krianastore.core.RateLimitExceededException;
 import com.joy.krianastore.domain.services.RateLimitingService;
 import com.joy.krianastore.domain.services.TransactionService;
 import com.joy.krianastore.presentation.dto.ApiResponse;
@@ -24,7 +25,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<ApiResponse<TransactionDto>> recordTransaction(@RequestBody TransactionDto transactionDTO, Principal currentUser) {
         if (rateLimitingService.allowRequest("/api/transactions")) {
-            return new ResponseEntity<>(new ApiResponse<>(false, "Rate limit exceeded", null), HttpStatus.TOO_MANY_REQUESTS);
+            throw new RateLimitExceededException("You have exceeded the allowed number of requests. Please try again later.");
         }
         var response = transactionService.recordTransaction(transactionDTO, currentUser);
         return new ResponseEntity<>(new ApiResponse<>(true, "Transaction added!", response), HttpStatus.CREATED);

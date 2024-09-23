@@ -1,5 +1,6 @@
 package com.joy.krianastore.domain.services;
 
+import com.joy.krianastore.core.ResourceNotFoundException;
 import com.joy.krianastore.data.StoreRepository;
 import com.joy.krianastore.data.UserRepository;
 import com.joy.krianastore.domain.models.Role;
@@ -10,10 +11,12 @@ import com.joy.krianastore.presentation.dto.UserLoginDto;
 import com.joy.krianastore.presentation.dto.UserLoginResponseDto;
 import com.joy.krianastore.presentation.dto.UserSignupDto;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
@@ -44,8 +47,7 @@ public class UserService {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
         if(optionalStore.isEmpty()) {
-            //TODO throw exception
-            return;
+            throw new ResourceNotFoundException("Store not found with id: " + user.getStore().getId());
         }
         var store=optionalStore.get();
         User newUser=new User();
@@ -61,13 +63,11 @@ public class UserService {
     public UserLoginResponseDto loginUser(UserLoginDto dto) {
         var optionalUser=userRepository.findByEmail(dto.email());
         if(optionalUser.isEmpty()) {
-            //TODO throw exception
-            return null;
+            throw new ResourceNotFoundException("User not found with email: " + dto.email());
         }
         var user=optionalUser.get();
         if(!passwordEncoder.matches(dto.password(), user.getPassword())) {
-            //TODO throw exception
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
         }
         //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
         var token=jwtService.generateToken(user);

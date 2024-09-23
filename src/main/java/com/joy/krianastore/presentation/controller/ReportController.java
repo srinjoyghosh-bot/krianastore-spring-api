@@ -1,5 +1,6 @@
 package com.joy.krianastore.presentation.controller;
 
+import com.joy.krianastore.core.RateLimitExceededException;
 import com.joy.krianastore.domain.services.RateLimitingService;
 import com.joy.krianastore.presentation.dto.ApiResponse;
 import com.joy.krianastore.presentation.dto.ReportDto;
@@ -24,7 +25,7 @@ public class ReportController {
     @GetMapping
     public ResponseEntity<ApiResponse<ReportDto>> getReports(@RequestParam(required = false) String period, Principal connectedUser) {
         if (rateLimitingService.allowRequest("/api/reports")) {
-            return new ResponseEntity<>(new ApiResponse<>(false, "Rate limit exceeded", null), HttpStatus.TOO_MANY_REQUESTS);
+            throw new RateLimitExceededException("You have exceeded the allowed number of requests. Please try again later.");
         }
         ReportDto response;
         if (period == null || period.equals("weekly")) {
@@ -34,8 +35,7 @@ public class ReportController {
         } else if (period.equals("yearly")) {
             response = reportsService.generateYearlyReport(connectedUser);
         } else {
-            //TODO throw exception
-            return null;
+            throw new IllegalArgumentException("Invalid period: " + period);
         }
         return new ResponseEntity<>(new ApiResponse<>(true, "Reports fetched!", response), HttpStatus.OK);
     }

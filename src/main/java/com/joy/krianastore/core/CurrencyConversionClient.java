@@ -19,8 +19,7 @@ public class CurrencyConversionClient {
         String url = BASE_URL + "?base=" + fromCurrency + "&symbols=" + toCurrency;
         CurrencyResponse response = restTemplate.getForObject(url, CurrencyResponse.class);
         if (response == null) {
-            //TODO throw exception
-            return null;
+            throw new RuntimeException("Could not get currency rate from " + fromCurrency + " to " + toCurrency);
         }
         return response.getRates().get(toCurrency);
     }
