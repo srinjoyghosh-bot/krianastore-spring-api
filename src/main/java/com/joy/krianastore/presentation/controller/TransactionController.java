@@ -33,9 +33,7 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TransactionDto>>> getTransactions(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, Principal connectedUser) {
-        var response = transactionService.getTransactionsBetweenDates(connectedUser, startDate, endDate).stream()
-                .map(TransactionMapper::toDTO)
-                .toList();
+        var response = transactionService.getTransactionsBetweenDates(connectedUser, startDate, endDate);
         return new ResponseEntity<>(new ApiResponse<>(true, "Transactions found!", response), HttpStatus.OK);
     }
 }

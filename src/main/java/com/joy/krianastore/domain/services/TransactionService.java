@@ -29,7 +29,7 @@ public class TransactionService {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
         if(optionalStore.isEmpty()){
-            throw new ResourceNotFoundException("Store not found");
+            throw new ResourceNotFoundException("Store not found with id: " + user.getStore().getId());
         }
         var store=optionalStore.get();
         if (!"INR".equals(transactionDTO.currency())) {
@@ -46,8 +46,8 @@ public class TransactionService {
         return TransactionMapper.toDTO(transaction);
     }
 
-    public List<Transaction> getTransactionsBetweenDates(Principal connectedUser, LocalDate startDate, LocalDate endDate) {
+    public List<TransactionDto> getTransactionsBetweenDates(Principal connectedUser, LocalDate startDate, LocalDate endDate) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        return transactionRepository.findAllByStoreIdAndTransactionDateBetween(user.getStore().getId(),startDate, endDate);
+        return transactionRepository.findAllByStoreIdAndTransactionDateBetween(user.getStore().getId(),startDate, endDate).stream().map(TransactionMapper::toDTO).toList();
     }
 }
