@@ -12,6 +12,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security configuration for the application. Configures authentication, authorization,
+ * and other security-related settings.
+ */
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
@@ -19,16 +23,21 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
-
+    /**
+     * Configures HTTP security settings, including endpoint security.
+     *
+     * @param http the HttpSecurity object to configure
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //TODO roles error
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/user/signup","/api/user/login").permitAll()
+                                .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
 //                        .requestMatchers("/api/user/create").hasRole("ADMIN")
 //                        .requestMatchers("/api/transaction/**").hasAnyRole("ADMIN", "READ_WRITE")
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

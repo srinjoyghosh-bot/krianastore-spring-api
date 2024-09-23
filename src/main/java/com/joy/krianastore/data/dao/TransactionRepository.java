@@ -6,10 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Repository interface for accessing and managing {@link Transaction} entities.
+ * Extends the {@link MongoRepository} for standard CRUD operations.
+ */
 @Repository
 public interface TransactionRepository extends MongoRepository<Transaction, String> {
-    List<Transaction> findAllByStoreId(String storeId);
 
+    /**
+     * Fetches all transactions for a particular store for a given period
+     * @param store_id the unique id for the store
+     * @param startDate the beginning of the period
+     * @param endDate the end of the period
+     * @return the list of required transactions
+     */
     List<Transaction> findAllByStoreIdAndTransactionDateBetween(String store_id, LocalDate startDate, LocalDate endDate);
 }

@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+/**
+ * REST Controller to manage reports
+ * Provides endpoints to fetch periodic reports
+ */
 @RestController
 @RequestMapping("/api/reports")
 @AllArgsConstructor
@@ -24,6 +28,14 @@ public class ReportController {
     private final ReportsService reportsService;
     private final RateLimitingService rateLimitingService;
 
+    /**
+     * Get weekly/monthly/yearly report
+     * @param period the period i.e. either weekly or monthly or yearly
+     * @param connectedUser the existing logged-in user
+     * @return the required report
+     * @throws RateLimitExceededException if rate limit is exceeded for the endpoint
+     * @throws IllegalArgumentException if incorrect period is mentioned
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<ReportDto>> getReports(@RequestParam(required = false) String period, Principal connectedUser) {
         if (rateLimitingService.allowRequest("/api/reports")) {

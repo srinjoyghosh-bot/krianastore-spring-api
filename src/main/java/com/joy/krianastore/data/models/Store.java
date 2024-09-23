@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a store which has multiple users and transactions associated with it
+ */
 @Document(collection = "stores")
 @Data
 @AllArgsConstructor

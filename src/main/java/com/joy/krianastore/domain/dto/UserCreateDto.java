@@ -1,6 +1,6 @@
 package com.joy.krianastore.domain.dto;
 
-import com.joy.krianastore.data.models.Role;
+import com.joy.krianastore.data.models.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -9,7 +9,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+/**
+ * Represents a financial transaction within the system.
+ * This entity is persisted in the database and can be a debit or credit.
+ */
 @Document(collection = "transactions")
 @Data
 @AllArgsConstructor

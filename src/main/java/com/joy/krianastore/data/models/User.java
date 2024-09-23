@@ -1,5 +1,6 @@
 package com.joy.krianastore.data.models;
 
+import com.joy.krianastore.data.models.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Represents a user managing the transactions of a store
+ */
 @Document(collection = "user")
 @Data
 @AllArgsConstructor

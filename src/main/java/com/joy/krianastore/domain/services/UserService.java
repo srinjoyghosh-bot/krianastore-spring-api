@@ -3,7 +3,7 @@ package com.joy.krianastore.domain.services;
 import com.joy.krianastore.core.exception.ResourceNotFoundException;
 import com.joy.krianastore.data.dao.StoreRepository;
 import com.joy.krianastore.data.dao.UserRepository;
-import com.joy.krianastore.data.models.Role;
+import com.joy.krianastore.data.models.enums.Role;
 import com.joy.krianastore.data.models.Store;
 import com.joy.krianastore.data.models.User;
 import com.joy.krianastore.domain.dto.UserCreateDto;

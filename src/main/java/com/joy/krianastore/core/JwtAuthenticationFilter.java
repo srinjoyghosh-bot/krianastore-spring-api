@@ -16,14 +16,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
+/**
+ * Filter that intercepts each request to check for a valid JWT token in the header.
+ * It validates the token and sets the authentication context for further authorization processes.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-
+    /**
+     * Filters incoming requests for JWT tokens. If a valid JWT token is found,
+     * the user's authentication is established and added to the security context.
+     *
+     * @param request the HTTP request to process
+     * @param response the HTTP response
+     * @param filterChain the chain of filters
+     * @throws ServletException if an error occurs during the request
+     * @throws IOException if an input or output error is detected
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
