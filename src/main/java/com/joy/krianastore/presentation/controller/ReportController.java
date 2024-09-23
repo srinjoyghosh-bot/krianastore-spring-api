@@ -1,9 +1,9 @@
 package com.joy.krianastore.presentation.controller;
 
-import com.joy.krianastore.core.RateLimitExceededException;
+import com.joy.krianastore.core.exception.RateLimitExceededException;
 import com.joy.krianastore.domain.services.RateLimitingService;
-import com.joy.krianastore.presentation.dto.ApiResponse;
-import com.joy.krianastore.presentation.dto.ReportDto;
+import com.joy.krianastore.domain.dto.ApiResponse;
+import com.joy.krianastore.domain.dto.ReportDto;
 import com.joy.krianastore.domain.services.ReportsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

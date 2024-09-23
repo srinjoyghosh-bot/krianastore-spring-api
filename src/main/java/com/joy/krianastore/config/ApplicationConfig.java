@@ -1,6 +1,6 @@
 package com.joy.krianastore.config;
 
-import com.joy.krianastore.data.UserRepository;
+import com.joy.krianastore.data.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

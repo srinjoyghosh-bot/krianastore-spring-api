@@ -1,4 +1,4 @@
-package com.joy.krianastore.domain.models;
+package com.joy.krianastore.data.models;
 
 /**
  * ADMIN can create new user, read and create transactions for its store.

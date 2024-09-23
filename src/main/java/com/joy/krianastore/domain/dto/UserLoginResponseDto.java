@@ -1,4 +1,4 @@
-package com.joy.krianastore.presentation.dto;
+package com.joy.krianastore.domain.dto;
 
 public record UserLoginResponseDto(String token) {
 }

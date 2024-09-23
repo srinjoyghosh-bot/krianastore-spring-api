@@ -1,15 +1,15 @@
 package com.joy.krianastore.domain.services;
 
-import com.joy.krianastore.core.ResourceNotFoundException;
-import com.joy.krianastore.data.StoreRepository;
-import com.joy.krianastore.data.UserRepository;
-import com.joy.krianastore.domain.models.Role;
-import com.joy.krianastore.domain.models.Store;
-import com.joy.krianastore.domain.models.User;
-import com.joy.krianastore.presentation.dto.UserCreateDto;
-import com.joy.krianastore.presentation.dto.UserLoginDto;
-import com.joy.krianastore.presentation.dto.UserLoginResponseDto;
-import com.joy.krianastore.presentation.dto.UserSignupDto;
+import com.joy.krianastore.core.exception.ResourceNotFoundException;
+import com.joy.krianastore.data.dao.StoreRepository;
+import com.joy.krianastore.data.dao.UserRepository;
+import com.joy.krianastore.data.models.Role;
+import com.joy.krianastore.data.models.Store;
+import com.joy.krianastore.data.models.User;
+import com.joy.krianastore.domain.dto.UserCreateDto;
+import com.joy.krianastore.domain.dto.UserLoginDto;
+import com.joy.krianastore.domain.dto.UserLoginResponseDto;
+import com.joy.krianastore.domain.dto.UserSignupDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;

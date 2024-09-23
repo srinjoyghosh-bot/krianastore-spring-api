@@ -1,9 +1,9 @@
 package com.joy.krianastore.domain.services;
 
-import com.joy.krianastore.domain.models.Transaction;
-import com.joy.krianastore.data.TransactionRepository;
-import com.joy.krianastore.domain.models.User;
-import com.joy.krianastore.presentation.dto.ReportDto;
+import com.joy.krianastore.data.models.Transaction;
+import com.joy.krianastore.data.dao.TransactionRepository;
+import com.joy.krianastore.data.models.User;
+import com.joy.krianastore.domain.dto.ReportDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;

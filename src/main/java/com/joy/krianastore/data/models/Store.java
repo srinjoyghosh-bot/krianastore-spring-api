@@ -1,4 +1,4 @@
-package com.joy.krianastore.domain.models;
+package com.joy.krianastore.data.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

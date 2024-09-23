@@ -1,7 +1,7 @@
 package com.joy.krianastore.presentation.controller;
 
+import com.joy.krianastore.domain.dto.*;
 import com.joy.krianastore.domain.services.UserService;
-import com.joy.krianastore.presentation.dto.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

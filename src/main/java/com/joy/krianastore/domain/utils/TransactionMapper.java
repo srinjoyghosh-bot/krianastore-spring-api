@@ -1,7 +1,7 @@
-package com.joy.krianastore.utils;
+package com.joy.krianastore.domain.utils;
 
-import com.joy.krianastore.domain.models.Transaction;
-import com.joy.krianastore.presentation.dto.TransactionDto;
+import com.joy.krianastore.data.models.Transaction;
+import com.joy.krianastore.domain.dto.TransactionDto;
 
 import java.time.LocalDate;
 

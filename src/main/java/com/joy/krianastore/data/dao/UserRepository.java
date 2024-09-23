@@ -1,6 +1,6 @@
-package com.joy.krianastore.data;
+package com.joy.krianastore.data.dao;
 
-import com.joy.krianastore.domain.models.User;
+import com.joy.krianastore.data.models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
