@@ -1,4 +1,4 @@
-package com.joy.krianastore;
+package com.joy.krianastore.presentation.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

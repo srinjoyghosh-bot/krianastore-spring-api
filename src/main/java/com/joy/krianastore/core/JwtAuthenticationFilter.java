@@ -1,5 +1,6 @@
-package com.joy.krianastore;
+package com.joy.krianastore.core;
 
+import com.joy.krianastore.domain.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

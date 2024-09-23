@@ -1,7 +1,9 @@
-package com.joy.krianastore;
+package com.joy.krianastore.utils;
+
+import com.joy.krianastore.domain.models.Transaction;
+import com.joy.krianastore.presentation.dto.TransactionDto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class TransactionMapper {
 

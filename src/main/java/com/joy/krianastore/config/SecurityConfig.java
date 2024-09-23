@@ -1,5 +1,6 @@
-package com.joy.krianastore;
+package com.joy.krianastore.config;
 
+import com.joy.krianastore.core.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

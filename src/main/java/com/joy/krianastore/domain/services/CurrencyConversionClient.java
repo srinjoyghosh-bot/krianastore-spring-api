@@ -1,4 +1,4 @@
-package com.joy.krianastore;
+package com.joy.krianastore.domain.services;
 
 import lombok.Data;
 import org.springframework.stereotype.Service;

@@ -1,5 +1,11 @@
-package com.joy.krianastore;
+package com.joy.krianastore.domain.services;
 
+import com.joy.krianastore.data.StoreRepository;
+import com.joy.krianastore.data.TransactionRepository;
+import com.joy.krianastore.domain.models.Transaction;
+import com.joy.krianastore.domain.models.User;
+import com.joy.krianastore.presentation.dto.TransactionDto;
+import com.joy.krianastore.utils.TransactionMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -16,7 +22,7 @@ public class TransactionService {
     private final StoreRepository storeRepository;
     private final CurrencyConversionClient currencyConversionClient;
 
-    public TransactionDto recordTransaction(TransactionDto transactionDTO,Principal connectedUser) {
+    public TransactionDto recordTransaction(TransactionDto transactionDTO, Principal connectedUser) {
         Transaction transaction;
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
@@ -28,7 +34,7 @@ public class TransactionService {
         if (!"INR".equals(transactionDTO.currency())) {
             BigDecimal convertedAmount = currencyConversionClient.convertCurrency(transactionDTO.currency(), "INR", transactionDTO.amount());
             TransactionDto newDto=new TransactionDto("INR",convertedAmount, transactionDTO.isCredit());
-            transaction=TransactionMapper.toEntity(newDto);
+            transaction= TransactionMapper.toEntity(newDto);
         }else{
             transaction=TransactionMapper.toEntity(transactionDTO);
         }

@@ -1,4 +1,4 @@
-package com.joy.krianastore;
+package com.joy.krianastore.domain.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

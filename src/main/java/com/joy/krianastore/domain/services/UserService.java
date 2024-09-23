@@ -1,5 +1,14 @@
-package com.joy.krianastore;
+package com.joy.krianastore.domain.services;
 
+import com.joy.krianastore.data.StoreRepository;
+import com.joy.krianastore.data.UserRepository;
+import com.joy.krianastore.domain.models.Role;
+import com.joy.krianastore.domain.models.Store;
+import com.joy.krianastore.domain.models.User;
+import com.joy.krianastore.presentation.dto.UserCreateDto;
+import com.joy.krianastore.presentation.dto.UserLoginDto;
+import com.joy.krianastore.presentation.dto.UserLoginResponseDto;
+import com.joy.krianastore.presentation.dto.UserSignupDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +26,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    void userSignUp(UserSignupDto userSignupDto) {
+    public void userSignUp(UserSignupDto userSignupDto) {
         Store store = new Store();
         store.setName(userSignupDto.storeName());
         var savedStore=storeRepository.save(store);
@@ -31,7 +40,7 @@ public class UserService {
         storeRepository.save(savedStore);
     }
 
-    void createUser(UserCreateDto dto, Principal connectedUser) {
+    public void createUser(UserCreateDto dto, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore=storeRepository.findById(user.getStore().getId());
         if(optionalStore.isEmpty()) {
@@ -49,7 +58,7 @@ public class UserService {
         storeRepository.save(store);
     }
 
-    UserLoginResponseDto loginUser(UserLoginDto dto) {
+    public UserLoginResponseDto loginUser(UserLoginDto dto) {
         var optionalUser=userRepository.findByEmail(dto.email());
         if(optionalUser.isEmpty()) {
             //TODO throw exception

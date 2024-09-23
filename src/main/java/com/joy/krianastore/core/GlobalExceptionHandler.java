@@ -1,5 +1,6 @@
-package com.joy.krianastore;
+package com.joy.krianastore.core;
 
+import com.joy.krianastore.presentation.dto.ApiResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

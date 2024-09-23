@@ -1,4 +1,4 @@
-package com.joy.krianastore;
+package com.joy.krianastore.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class Store {
     @DBRef
     private List<Transaction> transactions;
 
-    void addUser(User user) {
+    public void addUser(User user) {
         if(users == null)
         {
             users = new ArrayList<User>();
@@ -35,7 +34,7 @@ public class Store {
         user.setStore(this);
     }
 
-    void addTransaction(Transaction txn) {
+    public void addTransaction(Transaction txn) {
         if(transactions == null)
         {
             transactions = new ArrayList<Transaction>();
