@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: kiranastore
+  data:
+    mongodb:
+      uri: mongodb+srv://srinjoy:ZmUiUFEeAJLCkQZQ@cluster0.qkd0v.mongodb.net/kirana?retryWrites=true&w=majority
+      database: kirana
