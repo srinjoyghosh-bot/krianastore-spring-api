@@ -18,6 +18,9 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * TransactionService handles business logic relation to transaction operations
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -26,6 +29,13 @@ public class TransactionService {
     private final StoreRepository storeRepository;
     private final CurrencyConversionClient currencyConversionClient;
 
+    /**
+     * Records a new transaction in the database
+     * @param transactionDTO is the transaction details
+     * @param connectedUser is the currently logged-in user
+     * @return the recorded transaction details
+     * @throws ResourceNotFoundException if store of that user is not found
+     */
     public TransactionDto recordTransaction(TransactionDto transactionDTO, Principal connectedUser) {
         log.info("Recording transaction {}", transactionDTO);
         Transaction transaction;
@@ -51,6 +61,13 @@ public class TransactionService {
         return TransactionMapper.toDTO(transaction);
     }
 
+    /**
+     * Fetches transactions between specified dates
+     * @param connectedUser currently logged-in user
+     * @param startDate start date for the time period
+     * @param endDate end date for the time period
+     * @return returns list of transactions of the store of the user between the said dates
+     */
     public List<TransactionDto> getTransactionsBetweenDates(Principal connectedUser, LocalDate startDate, LocalDate endDate) {
         log.info("Getting transactions between {} and {}", startDate, endDate);
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();

@@ -26,6 +26,12 @@ public class RateLimitingService {
         buckets.put(key, bucket);
     }
 
+    /**
+     * checks whether a request is allowed based on the bucket's token availability
+     * @param key is the request endpoint
+     * @return true if request should be denied
+     * @throws IllegalArgumentException if not bucket is configured for that endpoint
+     */
     public boolean allowRequest(String key) {
         Bucket bucket = buckets.get(key);
         if (bucket == null) {

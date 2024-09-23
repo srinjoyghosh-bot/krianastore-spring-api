@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
 public class ReportsService {
     private final TransactionRepository transactionRepository;
 
+    /**
+     * Generates weekly report
+     * @param connectedUser is the currently logged-in user
+     * @return the weekly report for the store of the user
+     */
     public ReportDto generateWeeklyReport(Principal connectedUser) {
         log.info("Generating weekly report...");
         LocalDate endDate = LocalDate.now().plusDays(1);
@@ -29,6 +34,11 @@ public class ReportsService {
         return generateReport(startDate, endDate, connectedUser);
     }
 
+    /**
+     * Generates monthly report
+     * @param connectedUser is the currently logged-in user
+     * @return the monthly report for the store of the user
+     */
     public ReportDto generateMonthlyReport(Principal connectedUser) {
         log.info("Generating monthly report...");
         LocalDate now = LocalDate.now();
@@ -37,6 +47,11 @@ public class ReportsService {
         return generateReport(startDate, endDate, connectedUser);
     }
 
+    /**
+     * Generates yearly report
+     * @param connectedUser is the currently logged-in user
+     * @return the yearly report for the store of the user
+     */
     public ReportDto generateYearlyReport(Principal connectedUser) {
         log.info("Generating yearly report...");
         LocalDate now = LocalDate.now();
@@ -45,6 +60,13 @@ public class ReportsService {
         return generateReport(startDate, endDate, connectedUser);
     }
 
+    /**
+     * Generates report between for any period
+     * @param connectedUser is the currently logged-in user
+     * @param startDate is the beginning date for the period
+     * @param endDate is the end date for the period
+     * @return the report for the store of the user for the given period
+     */
     private ReportDto generateReport(LocalDate startDate, LocalDate endDate, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         log.info("Fetching transactions between {} and {}", startDate, endDate);

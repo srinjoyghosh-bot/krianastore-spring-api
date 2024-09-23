@@ -31,6 +31,10 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    /**
+     * Creates a new user and a new store of that user
+     * @param userSignupDto is the user and store details
+     */
     public void userSignUp(UserSignupDto userSignupDto) {
         log.info("Registering user {}", userSignupDto);
         Store store = new Store();
@@ -48,6 +52,12 @@ public class UserService {
         storeRepository.save(savedStore);
     }
 
+    /**
+     * New user being created by an existing user with ADMIN role
+     * @param dto is the details of the new user
+     * @param connectedUser is the details of the currently logged-in user
+     * @throws ResourceNotFoundException if store of that user is not found
+     */
     public void createUser(UserCreateDto dto, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore = storeRepository.findById(user.getStore().getId());
@@ -68,6 +78,13 @@ public class UserService {
         storeRepository.save(store);
     }
 
+    /**
+     * Logs in a user
+     * @param dto is the user details
+     * @return the token for the logged in user
+     * @throws ResourceNotFoundException is user is not found for the email
+     * @throws ResponseStatusException is password is wrong
+     */
     public UserLoginResponseDto loginUser(UserLoginDto dto) {
         var optionalUser = userRepository.findByEmail(dto.email());
         if (optionalUser.isEmpty()) {
