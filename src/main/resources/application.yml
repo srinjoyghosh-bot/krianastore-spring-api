@@ -5,3 +5,10 @@ spring:
     mongodb:
       uri: mongodb+srv://srinjoy:ZmUiUFEeAJLCkQZQ@cluster0.qkd0v.mongodb.net/kirana?retryWrites=true&w=majority
       database: kirana
+  cache:
+    type: redis
+
+    redis:
+      host: localhost
+      port: 6379
+      time-to-live: 60000

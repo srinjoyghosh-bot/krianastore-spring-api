@@ -1,6 +1,7 @@
-package com.joy.krianastore.domain.services;
+package com.joy.krianastore.core;
 
 import lombok.Data;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,7 +13,8 @@ public class CurrencyConversionClient {
 
     private final String BASE_URL = "https://api.fxratesapi.com/latest";
 
-    public BigDecimal convertCurrency(String fromCurrency, String toCurrency, BigDecimal amount) {
+    @Cacheable(value = "currencyRates", key = "#fromCurrency + '-' + #toCurrency")
+    public BigDecimal getConversionRate(String fromCurrency, String toCurrency) {
         RestTemplate restTemplate = new RestTemplate();
         String url = BASE_URL + "?base=" + fromCurrency + "&symbols=" + toCurrency;
         CurrencyResponse response = restTemplate.getForObject(url, CurrencyResponse.class);
@@ -20,8 +22,7 @@ public class CurrencyConversionClient {
             //TODO throw exception
             return null;
         }
-        BigDecimal rate = response.getRates().get(toCurrency);
-        return amount.multiply(rate);
+        return response.getRates().get(toCurrency);
     }
 
     @Data

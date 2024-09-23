@@ -1,5 +1,6 @@
 package com.joy.krianastore.domain.services;
 
+import com.joy.krianastore.core.CurrencyConversionClient;
 import com.joy.krianastore.data.StoreRepository;
 import com.joy.krianastore.data.TransactionRepository;
 import com.joy.krianastore.domain.models.Transaction;
@@ -32,8 +33,8 @@ public class TransactionService {
         }
         var store=optionalStore.get();
         if (!"INR".equals(transactionDTO.currency())) {
-            BigDecimal convertedAmount = currencyConversionClient.convertCurrency(transactionDTO.currency(), "INR", transactionDTO.amount());
-            TransactionDto newDto=new TransactionDto("INR",convertedAmount, transactionDTO.isCredit());
+            BigDecimal convertRate = currencyConversionClient.getConversionRate(transactionDTO.currency(), "INR");
+            TransactionDto newDto=new TransactionDto("INR",transactionDTO.amount().multiply(convertRate), transactionDTO.isCredit());
             transaction= TransactionMapper.toEntity(newDto);
         }else{
             transaction=TransactionMapper.toEntity(transactionDTO);
