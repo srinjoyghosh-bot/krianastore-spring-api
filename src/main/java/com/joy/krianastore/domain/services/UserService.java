@@ -34,8 +34,14 @@ public class UserService {
     /**
      * Creates a new user and a new store of that user
      * @param userSignupDto is the user and store details
+     * @throws ResponseStatusException if user already exists for the email
      */
     public void userSignUp(UserSignupDto userSignupDto) {
+        log.info("Checking if user already exists for email {} in userSingUp", userSignupDto.email());
+        if(isUserPresent(userSignupDto.email())){
+            log.error("User already exists for email {} in userSignUp", userSignupDto.email());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+        }
         log.info("Registering user {}", userSignupDto);
         Store store = new Store();
         store.setName(userSignupDto.storeName());
@@ -57,8 +63,14 @@ public class UserService {
      * @param dto is the details of the new user
      * @param connectedUser is the details of the currently logged-in user
      * @throws ResourceNotFoundException if store of that user is not found
+     * @throws ResponseStatusException is user for the email already exists
      */
     public void createUser(UserCreateDto dto, Principal connectedUser) {
+        log.info("Checking if user already exists for email {}", dto.email());
+        if(isUserPresent(dto.email())){
+            log.error("User already exists for email {}", dto.email());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already in use");
+        }
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         var optionalStore = storeRepository.findById(user.getStore().getId());
         if (optionalStore.isEmpty()) {
@@ -102,5 +114,15 @@ public class UserService {
         log.info("Logged in user {}", user);
         return new UserLoginResponseDto(token);
 
+    }
+
+    /**
+     * Checks if a user already exists for an email
+     * @param email the email to be checked
+     * @return true if User exists
+     */
+    private boolean isUserPresent(String email) {
+        var user = userRepository.findByEmail(email);
+        return user.isPresent();
     }
 }
