@@ -96,8 +96,7 @@ public class UserService {
             log.error("Wrong password");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
         }
-        //TODO
-        //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getId(), dto.password()));
         log.info("Generating token for user {}", user);
         var token = jwtService.generateToken(user);
         log.info("Logged in user {}", user);
