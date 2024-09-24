@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,8 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
 
-    //TODO move to applicaiton.yml
-    private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970  ";
+    @Value("${application.jwt.secret-key}")
+    private String SECRET_KEY;
 
     /**
      * extracts the user id from the token
