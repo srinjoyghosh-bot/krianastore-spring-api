@@ -7,8 +7,8 @@ spring:
       database: kirana
   cache:
     type: redis
-
     redis:
       host: localhost
       port: 6379
       time-to-live: 60000
+

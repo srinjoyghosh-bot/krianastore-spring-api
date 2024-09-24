@@ -1,6 +1,7 @@
 package com.joy.krianastore.presentation.controller;
 
 import com.joy.krianastore.core.exception.RateLimitExceededException;
+import com.joy.krianastore.data.models.User;
 import com.joy.krianastore.domain.services.RateLimitingService;
 import com.joy.krianastore.domain.dto.ApiResponse;
 import com.joy.krianastore.domain.dto.ReportDto;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +40,9 @@ public class ReportController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<ReportDto>> getReports(@RequestParam(required = false) String period, Principal connectedUser) {
-        if (rateLimitingService.allowRequest("/api/reports")) {
-            log.error("Rate limit exceeded for /api/reports");
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        if (!rateLimitingService.allowRequest("/api/reports", user.getId())) {
+            log.error("Rate limit exceeded for /api/reports for user {}", user.getId());
             throw new RateLimitExceededException("You have exceeded the allowed number of requests. Please try again later.");
         }
         ReportDto response;
