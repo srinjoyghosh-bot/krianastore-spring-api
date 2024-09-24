@@ -74,4 +74,10 @@ public class TransactionService {
         log.info("Returning transactions between {} and {}", startDate, endDate);
         return transactionRepository.findAllByStoreIdAndTransactionDateBetween(user.getStore().getId(),startDate, endDate).stream().map(TransactionMapper::toDTO).toList();
     }
+
+    public List<TransactionDto> getAllTransactions(Principal connectedUser) {
+        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        log.info("Getting all transactions for user {}", user.getId());
+        return transactionRepository.findAllByStoreId(user.getStore().getId()).stream().map(TransactionMapper::toDTO).toList();
+    }
 }

@@ -21,4 +21,10 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
      * @return the list of required transactions
      */
     List<Transaction> findAllByStoreIdAndTransactionDateBetween(String store_id, LocalDate startDate, LocalDate endDate);
+    /**
+     * Fetches all transactions for a particular store
+     * @param store_id the unique id for the store
+     * @return the list of required transactions
+     */
+    List<Transaction> findAllByStoreId(String store_id);
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+
 /**
  * REST controller for managing transactions.
  * Provides endpoints to record and fetch transactions.
@@ -30,8 +31,9 @@ public class TransactionController {
 
     /**
      * Records a new transaction
+     *
      * @param transactionDTO is the transaction details
-     * @param connectedUser is the currently logged-in user
+     * @param connectedUser  is the currently logged-in user
      * @return the saved transaction
      * @throws RateLimitExceededException if the rate limit is exceeded for the endpoint
      */
@@ -47,15 +49,22 @@ public class TransactionController {
     }
 
     /**
-     * Fetches the transactions associated with the user's store in the mentioned period
-     * @param startDate is the beginning date of the period
-     * @param endDate is the end date of the period
+     * Fetches the transactions associated with the user's store in the period, if provided else returns all transactions
+     *
+     * @param startDate     is the beginning date of the period
+     * @param endDate       is the end date of the period
      * @param connectedUser is the currently logged-in user
      * @return the list of required transactions
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TransactionDto>>> getTransactions(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, Principal connectedUser) {
-        var response = transactionService.getTransactionsBetweenDates(connectedUser, startDate, endDate);
+    public ResponseEntity<ApiResponse<List<TransactionDto>>> getTransactions(@RequestParam(required = false) LocalDate startDate, @RequestParam(required = false) LocalDate endDate, Principal connectedUser) {
+        List<TransactionDto> response;
+        if (startDate != null && endDate != null) {
+            response = transactionService.getTransactionsBetweenDates(connectedUser, startDate, endDate);
+        } else {
+            response = transactionService.getAllTransactions(connectedUser);
+        }
+
         return new ResponseEntity<>(new ApiResponse<>(true, "Transactions found!", response), HttpStatus.OK);
     }
 }
