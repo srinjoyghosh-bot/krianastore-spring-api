@@ -9,5 +9,5 @@ import jakarta.validation.constraints.Size;
  * @param email email id of new user
  * @param password password of new user
  */
-public record UserLoginDto(@Email @NotNull String email, @NotNull @Size(min = 5,max = 8,message = "Password must be 5 to 8 characters long") String password) {
+public record UserLoginDto(@Email(message = "Provide a valid email") @NotNull(message = "Email cannot be null") String email, @NotNull(message = "Password cannot be null") @Size(min = 5,max = 8,message = "Password must be 5 to 8 characters long") String password) {
 }

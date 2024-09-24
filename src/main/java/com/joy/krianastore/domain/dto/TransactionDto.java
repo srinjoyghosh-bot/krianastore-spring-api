@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * @param amount amount of transaction
  * @param isCredit indicator if transaction is Money-In or Money-Out
  */
-public record TransactionDto(@NotNull @NotEmpty String currency,
+public record TransactionDto(@NotNull @NotEmpty(message = "Provide a valid currency code") String currency,
                              @NotNull @NotEmpty @Pattern(regexp = "^\\d+(\\.\\d+)?$", message = "Must be a valid non-negative number without any alphabets or symbols") BigDecimal amount,
-                             @NotNull boolean isCredit) {
+                             @NotNull(message = "Field isCredit cannot be null") boolean isCredit) {
 }

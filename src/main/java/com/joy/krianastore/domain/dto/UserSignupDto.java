@@ -11,6 +11,6 @@ import jakarta.validation.constraints.Size;
  * @param password password of new user
  * @param storeName name of the store of the user
  */
-public record UserSignupDto(@Email @NotNull String email,
-                            @NotNull @Size(min = 5, max = 8, message = "Password must be 5 to 8 characters long") String password,@NotNull @NotEmpty String storeName) {
+public record UserSignupDto(@Email(message = "Provide a valid email") @NotNull(message = "Email cannot be null") String email,
+                            @NotNull(message = "Password cannot be null") @Size(min = 5, max = 8, message = "Password must be 5 to 8 characters long") String password,@NotNull(message = "Store name cannot be null") @NotEmpty(message = "Store name cannot be empty") String storeName) {
 }
